@@ -53,25 +53,25 @@ const Index = () => {
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-purple-50 via-pink-50 to-orange-50">
+    <div className="min-h-screen bg-background">
       <div className="container mx-auto px-4 py-8">
         <header className="text-center mb-16 animate-fade-in">
-          <div className="inline-flex items-center gap-2 mb-4 px-4 py-2 bg-white/60 backdrop-blur-sm rounded-full">
-            <Icon name="Sparkles" className="text-purple-600" size={20} />
-            <span className="text-sm font-medium text-purple-600">AI-генератор контента</span>
+          <div className="inline-flex items-center gap-2 mb-4 px-4 py-2 bg-card backdrop-blur-sm rounded-full border border-primary/20 animate-pulse-glow">
+            <Icon name="Sparkles" className="text-primary" size={20} />
+            <span className="text-sm font-medium text-primary">AI-генератор контента</span>
           </div>
-          <h1 className="text-6xl md:text-7xl font-heading font-bold mb-6 gradient-text animate-gradient">
+          <h1 className="text-6xl md:text-7xl font-heading font-bold mb-6 gradient-text animate-gradient glow-text">
             Идеи для видео<br />за секунды
           </h1>
-          <p className="text-xl text-gray-600 max-w-2xl mx-auto mb-8">
+          <p className="text-xl text-muted-foreground max-w-2xl mx-auto mb-8">
             ИИ генератор идей для видео с заголовками, описаниями, хештегами и сценариями
           </p>
           <div className="flex gap-4 justify-center flex-wrap">
-            <Button size="lg" className="gradient-purple text-white hover:opacity-90 transition-opacity text-lg px-8 py-6">
+            <Button size="lg" className="gradient-purple text-white hover:opacity-90 transition-all text-lg px-8 py-6 glow animate-float">
               <Icon name="Zap" className="mr-2" size={20} />
               Начать бесплатно
             </Button>
-            <Button size="lg" variant="outline" className="text-lg px-8 py-6 bg-white/60 backdrop-blur-sm">
+            <Button size="lg" variant="outline" className="text-lg px-8 py-6 bg-card backdrop-blur-sm border-primary/30 hover:border-primary/60">
               <Icon name="PlayCircle" className="mr-2" size={20} />
               Посмотреть примеры
             </Button>
@@ -84,9 +84,9 @@ const Index = () => {
             { icon: 'Palette', title: 'Разные стили', desc: 'От делового до развлекательного тона' },
             { icon: 'Rocket', title: 'За секунды', desc: 'Мгновенная генерация готовых постов' }
           ].map((feature, idx) => (
-            <Card key={idx} className="border-0 shadow-lg bg-white/80 backdrop-blur-sm hover:shadow-xl transition-all animate-slide-up" style={{ animationDelay: `${idx * 0.1}s` }}>
+            <Card key={idx} className="border border-primary/10 shadow-lg bg-card backdrop-blur-sm hover:shadow-xl hover:border-primary/30 transition-all animate-slide-up glow" style={{ animationDelay: `${idx * 0.1}s` }}>
               <CardHeader>
-                <div className="w-14 h-14 rounded-2xl gradient-purple flex items-center justify-center mb-4">
+                <div className="w-14 h-14 rounded-2xl gradient-purple flex items-center justify-center mb-4 glow">
                   <Icon name={feature.icon as any} className="text-white" size={28} />
                 </div>
                 <CardTitle className="font-heading text-2xl">{feature.title}</CardTitle>
@@ -101,11 +101,11 @@ const Index = () => {
             <h2 className="text-4xl md:text-5xl font-heading font-bold mb-4">
               Генератор идей
             </h2>
-            <p className="text-lg text-gray-600">Заполните поля и получите готовую идею для видео</p>
+            <p className="text-lg text-muted-foreground">Заполните поля и получите готовую идею для видео</p>
           </div>
 
           <div className="grid lg:grid-cols-2 gap-8 max-w-6xl mx-auto">
-            <Card className="border-0 shadow-xl bg-white">
+            <Card className="border border-primary/10 shadow-xl bg-card glow">
               <CardHeader>
                 <CardTitle className="font-heading text-2xl">Параметры генерации</CardTitle>
                 <CardDescription>Укажите детали для создания контента</CardDescription>

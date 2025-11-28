@@ -50,7 +50,7 @@ def handler(event: Dict[str, Any], context: Any) -> Dict[str, Any]:
                 'body': json.dumps({'error': 'Нужно указать нишу и тему'})
             }
         
-        api_key = os.environ.get('OPENAI_API_KEY')
+        api_key = os.environ.get('DEEPSEEK_API_KEY')
         if not api_key:
             return {
                 'statusCode': 500,
@@ -58,10 +58,11 @@ def handler(event: Dict[str, Any], context: Any) -> Dict[str, Any]:
                     'Content-Type': 'application/json',
                     'Access-Control-Allow-Origin': '*'
                 },
-                'body': json.dumps({'error': 'API ключ OpenAI не настроен'})
+                'body': json.dumps({'error': 'API ключ DeepSeek не настроен'})
             }
         
         openai.api_key = api_key
+        openai.api_base = 'https://api.deepseek.com'
         
         tone_descriptions = {
             'professional': 'профессиональный и деловой',
@@ -93,7 +94,7 @@ def handler(event: Dict[str, Any], context: Any) -> Dict[str, Any]:
 Верни ТОЛЬКО валидный JSON без дополнительного текста."""
 
         response = openai.ChatCompletion.create(
-            model="gpt-4o-mini",
+            model="deepseek-chat",
             messages=[
                 {"role": "system", "content": "Ты эксперт по созданию контента для соцсетей. Всегда отвечай только валидным JSON."},
                 {"role": "user", "content": prompt}
