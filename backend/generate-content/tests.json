@@ -1,0 +1,29 @@
+{
+  "tests": [
+    {
+      "name": "Generate video content idea",
+      "method": "POST",
+      "body": {
+        "niche": "фитнес",
+        "tone": "energetic",
+        "topic": "Утренняя зарядка для начинающих"
+      },
+      "expectedStatus": 200,
+      "expectedBody": {
+        "title": "string",
+        "description": "string",
+        "hashtags": "array",
+        "script": "array"
+      },
+      "bodyMatcher": "partial"
+    },
+    {
+      "name": "Missing required fields",
+      "method": "POST",
+      "body": {
+        "niche": "фитнес"
+      },
+      "expectedStatus": 400
+    }
+  ]
+}

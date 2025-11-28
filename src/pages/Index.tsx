@@ -8,26 +8,48 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@
 import { Badge } from '@/components/ui/badge';
 import Icon from '@/components/ui/icon';
 
+interface VideoContent {
+  title: string;
+  description: string;
+  hashtags: string[];
+  script: string[];
+}
+
 const Index = () => {
   const [niche, setNiche] = useState('');
   const [tone, setTone] = useState('');
   const [topic, setTopic] = useState('');
-  const [generatedContent, setGeneratedContent] = useState('');
+  const [generatedContent, setGeneratedContent] = useState<VideoContent | null>(null);
   const [isGenerating, setIsGenerating] = useState(false);
+  const [error, setError] = useState('');
 
-  const handleGenerate = () => {
+  const handleGenerate = async () => {
     setIsGenerating(true);
-    setTimeout(() => {
-      const mockContent = `🎯 ${topic || 'Ваша тема'}\n\n${
-        tone === 'professional'
-          ? 'Профессиональный подход к вашему бизнесу. Мы знаем, как важно качество и надежность в современном мире.'
-          : tone === 'friendly'
-          ? 'Привет! 👋 Сегодня хотим поделиться с вами чем-то классным! Знаете, что самое важное в нашем деле?'
-          : 'Это просто WOW! 🔥 Вы не поверите, что мы для вас приготовили! Готовы к сюрпризу?'
-      }\n\n✨ Ключевые моменты:\n• Уникальное предложение\n• Высокое качество\n• Результаты с первого дня\n\n#${niche || 'бизнес'} #контент #соцсети #маркетинг`;
-      setGeneratedContent(mockContent);
+    setError('');
+    
+    try {
+      const response = await fetch('https://functions.poehali.dev/d228547b-829d-44fe-b238-da0c47860641', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ niche, tone, topic }),
+      });
+      
+      const data = await response.json();
+      
+      if (!response.ok) {
+        setError(data.error || 'Ошибка генерации');
+        setIsGenerating(false);
+        return;
+      }
+      
+      setGeneratedContent(data);
+    } catch (err) {
+      setError('Ошибка подключения к серверу');
+    } finally {
       setIsGenerating(false);
-    }, 1500);
+    }
   };
 
   return (
@@ -39,10 +61,10 @@ const Index = () => {
             <span className="text-sm font-medium text-purple-600">AI-генератор контента</span>
           </div>
           <h1 className="text-6xl md:text-7xl font-heading font-bold mb-6 gradient-text animate-gradient">
-            Создавайте контент<br />за секунды
+            Идеи для видео<br />за секунды
           </h1>
           <p className="text-xl text-gray-600 max-w-2xl mx-auto mb-8">
-            Генератор на основе ИИ для создания постов, сторис и хештегов под вашу нишу
+            ИИ генератор идей для видео с заголовками, описаниями, хештегами и сценариями
           </p>
           <div className="flex gap-4 justify-center flex-wrap">
             <Button size="lg" className="gradient-purple text-white hover:opacity-90 transition-opacity text-lg px-8 py-6">
@@ -77,9 +99,9 @@ const Index = () => {
         <section className="mb-16 animate-fade-in" id="generator">
           <div className="text-center mb-12">
             <h2 className="text-4xl md:text-5xl font-heading font-bold mb-4">
-              Генератор контента
+              Генератор идей
             </h2>
-            <p className="text-lg text-gray-600">Заполните поля и получите готовый пост</p>
+            <p className="text-lg text-gray-600">Заполните поля и получите готовую идею для видео</p>
           </div>
 
           <div className="grid lg:grid-cols-2 gap-8 max-w-6xl mx-auto">
@@ -115,10 +137,10 @@ const Index = () => {
                 </div>
 
                 <div>
-                  <Label htmlFor="topic" className="text-base font-medium mb-2 block">Тема поста</Label>
+                  <Label htmlFor="topic" className="text-base font-medium mb-2 block">Тема видео</Label>
                   <Textarea
                     id="topic"
-                    placeholder="О чем хотите написать пост?"
+                    placeholder="О чем хотите снять видео?"
                     value={topic}
                     onChange={(e) => setTopic(e.target.value)}
                     className="min-h-32 text-base resize-none"
@@ -133,36 +155,75 @@ const Index = () => {
                   {isGenerating ? (
                     <>
                       <Icon name="Loader2" className="mr-2 animate-spin" size={20} />
-                      Генерирую...
+                      Генерирую идею...
                     </>
                   ) : (
                     <>
                       <Icon name="Sparkles" className="mr-2" size={20} />
-                      Сгенерировать контент
+                      Сгенерировать идею
                     </>
                   )}
                 </Button>
+                {error && (
+                  <div className="text-red-500 text-sm mt-2 p-3 bg-red-50 rounded-lg">
+                    {error}
+                  </div>
+                )}
               </CardContent>
             </Card>
 
             <Card className="border-0 shadow-xl bg-gradient-to-br from-purple-600 to-pink-600 text-white">
               <CardHeader>
                 <CardTitle className="font-heading text-2xl text-white">Результат</CardTitle>
-                <CardDescription className="text-purple-100">Ваш сгенерированный пост</CardDescription>
+                <CardDescription className="text-purple-100">Ваша идея для видео</CardDescription>
               </CardHeader>
               <CardContent>
                 {generatedContent ? (
                   <div className="space-y-4">
-                    <div className="bg-white/10 backdrop-blur-sm rounded-lg p-6 min-h-64">
-                      <pre className="whitespace-pre-wrap font-sans text-base leading-relaxed">
-                        {generatedContent}
-                      </pre>
+                    <div className="bg-white/10 backdrop-blur-sm rounded-lg p-6 space-y-6">
+                      <div>
+                        <h3 className="text-sm font-semibold text-purple-200 mb-2">ЗАГОЛОВОК</h3>
+                        <p className="text-xl font-bold">{generatedContent.title}</p>
+                      </div>
+                      
+                      <div>
+                        <h3 className="text-sm font-semibold text-purple-200 mb-2">ОПИСАНИЕ</h3>
+                        <p className="text-base leading-relaxed">{generatedContent.description}</p>
+                      </div>
+                      
+                      <div>
+                        <h3 className="text-sm font-semibold text-purple-200 mb-2">ХЕШТЕГИ</h3>
+                        <div className="flex flex-wrap gap-2">
+                          {generatedContent.hashtags.map((tag, idx) => (
+                            <span key={idx} className="bg-white/20 px-3 py-1 rounded-full text-sm">
+                              #{tag}
+                            </span>
+                          ))}
+                        </div>
+                      </div>
+                      
+                      <div>
+                        <h3 className="text-sm font-semibold text-purple-200 mb-2">СЦЕНАРИЙ (ЧТО ДЕЛАТЬ В КАДРЕ)</h3>
+                        <ol className="space-y-2">
+                          {generatedContent.script.map((step, idx) => (
+                            <li key={idx} className="flex gap-3">
+                              <span className="bg-white/20 rounded-full w-6 h-6 flex items-center justify-center text-sm flex-shrink-0">
+                                {idx + 1}
+                              </span>
+                              <span className="text-sm leading-relaxed">{step}</span>
+                            </li>
+                          ))}
+                        </ol>
+                      </div>
                     </div>
                     <div className="flex gap-3">
                       <Button
                         variant="secondary"
                         className="flex-1 bg-white text-purple-600 hover:bg-gray-100"
-                        onClick={() => navigator.clipboard.writeText(generatedContent)}
+                        onClick={() => {
+                          const text = `${generatedContent.title}\n\n${generatedContent.description}\n\n${generatedContent.hashtags.map(t => '#' + t).join(' ')}\n\nСценарий:\n${generatedContent.script.map((s, i) => `${i + 1}. ${s}`).join('\n')}`;
+                          navigator.clipboard.writeText(text);
+                        }}
                       >
                         <Icon name="Copy" className="mr-2" size={18} />
                         Копировать
@@ -170,17 +231,18 @@ const Index = () => {
                       <Button
                         variant="secondary"
                         className="flex-1 bg-white text-purple-600 hover:bg-gray-100"
+                        onClick={() => setGeneratedContent(null)}
                       >
-                        <Icon name="Download" className="mr-2" size={18} />
-                        Скачать
+                        <Icon name="RotateCcw" className="mr-2" size={18} />
+                        Новая идея
                       </Button>
                     </div>
                   </div>
                 ) : (
-                  <div className="bg-white/10 backdrop-blur-sm rounded-lg p-6 min-h-64 flex items-center justify-center">
+                  <div className="bg-white/10 backdrop-blur-sm rounded-lg p-6 min-h-96 flex items-center justify-center">
                     <div className="text-center">
-                      <Icon name="FileText" className="mx-auto mb-4 text-white/60" size={48} />
-                      <p className="text-white/80">Ваш сгенерированный пост появится здесь</p>
+                      <Icon name="Video" className="mx-auto mb-4 text-white/60" size={48} />
+                      <p className="text-white/80">Ваша идея для видео появится здесь</p>
                     </div>
                   </div>
                 )}
