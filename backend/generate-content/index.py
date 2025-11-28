@@ -33,7 +33,7 @@ def handler(event: Dict[str, Any], context: Any) -> Dict[str, Any]:
         }
     
     try:
-        from openai import OpenAI
+        import openai
         
         body_data = json.loads(event.get('body', '{}'))
         niche = body_data.get('niche', '')
@@ -61,7 +61,7 @@ def handler(event: Dict[str, Any], context: Any) -> Dict[str, Any]:
                 'body': json.dumps({'error': 'API ключ OpenAI не настроен'})
             }
         
-        client = OpenAI(api_key=api_key)
+        openai.api_key = api_key
         
         tone_descriptions = {
             'professional': 'профессиональный и деловой',
@@ -92,7 +92,7 @@ def handler(event: Dict[str, Any], context: Any) -> Dict[str, Any]:
 
 Верни ТОЛЬКО валидный JSON без дополнительного текста."""
 
-        response = client.chat.completions.create(
+        response = openai.ChatCompletion.create(
             model="gpt-4o-mini",
             messages=[
                 {"role": "system", "content": "Ты эксперт по созданию контента для соцсетей. Всегда отвечай только валидным JSON."},
@@ -102,7 +102,7 @@ def handler(event: Dict[str, Any], context: Any) -> Dict[str, Any]:
             max_tokens=1000
         )
         
-        result_text = response.choices[0].message.content.strip()
+        result_text = response['choices'][0]['message']['content'].strip()
         
         if result_text.startswith('```json'):
             result_text = result_text[7:]
